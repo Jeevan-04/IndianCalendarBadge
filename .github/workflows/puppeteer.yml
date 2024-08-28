@@ -1,0 +1,34 @@
+name: Puppeteer Screenshot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Specify your Node.js version
+
+      - name: Install dependencies
+        run: |
+          npm install puppeteer
+
+      - name: Run Puppeteer script
+        run: |
+          node capture.js
+        
+      - name: Upload Screenshot
+        uses: actions/upload-artifact@v3
+        with:
+          name: badge-screenshot
+          path: badge.png
