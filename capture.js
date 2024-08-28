@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer');
   const page = await browser.newPage();
 
   // Replace 'http://localhost:5000' with the URL of your deployed app or local server
-  await page.goto('http://localhost:5000');
+  await page.goto('https://vikramsamvat.onrender.com');
 
   // Wait for the badge element to be rendered
   await page.waitForSelector('#badge');
