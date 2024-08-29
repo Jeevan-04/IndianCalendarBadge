@@ -31,10 +31,21 @@ jobs:
         run: node screenshot.js
 
       - name: Create directory for screenshots
-        run: mkdir -p screenshots
+        run: |
+          mkdir -p screenshots
+          echo "Directory created: $(ls -l)"
 
       - name: Move screenshot to directory
         run: |
-          TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
-          mv badge.png screenshots/badge-$TIMESTAMP.png
-          ls -l screenshots/  # List files to verify they are saved
+          if [ -f badge.png ]; then
+            TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
+            mv badge.png screenshots/badge-$TIMESTAMP.png
+            echo "Screenshot moved to screenshots directory."
+          else
+            echo "badge.png not found."
+          fi
+
+      - name: List files in screenshots directory
+        run: |
+          echo "Contents of screenshots directory:"
+          ls -l screenshots/
