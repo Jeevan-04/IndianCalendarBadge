@@ -1,19 +1,42 @@
-// screenshot.js
 const puppeteer = require('puppeteer');
 
+// Function to introduce a delay
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 (async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+  try {
+    console.log('Launching browser...');
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
 
-  // Replace 'https://vikramsamvat.onrender.com' with the URL of your deployed app
-  await page.goto('https://vikramsamvat.onrender.com', { timeout: 60000 }); // Increase timeout to 60 seconds
+    // Set viewport to a larger size and scale factor for higher resolution
+    await page.setViewport({
+      width: 1200,
+      height: 800,
+      deviceScaleFactor: 2 // Higher value for better resolution
+    });
 
-  // Wait for the badge element to be rendered
-  await page.waitForSelector('#badge');
+    console.log('Navigating to the page...');
+    await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
-  // Capture the screenshot of the badge element
-  const badgeElement = await page.$('#badge');
-  await badgeElement.screenshot({ path: 'badge.png' });
+    console.log('Waiting for 1 second...');
+    await wait(1000); // Wait for 1 second
 
-  await browser.close();
+    console.log('Waiting for #badge element...');
+    await page.waitForSelector('#badge', { timeout: 120000 });
+
+    console.log('Capturing screenshot of the badge element...');
+    const badgeElement = await page.$('#badge');
+    if (badgeElement) {
+      await badgeElement.screenshot({ path: 'badge.png' }); // Capture the specific element
+      console.log('Screenshot saved as badge.png');
+    } else {
+      console.error('Element with selector #badge not found');
+    }
+
+    console.log('Closing browser...');
+    await browser.close();
+  } catch (error) {
+    console.error('Error occurred:', error);
+  }
 })();
