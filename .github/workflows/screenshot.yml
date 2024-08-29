@@ -30,8 +30,13 @@ jobs:
       - name: Run Puppeteer script
         run: node screenshot.js
 
-      - name: Upload screenshot
+      - name: Move screenshot to the directory
+        run: |
+          mkdir -p screenshots
+          mv badge.png screenshots/badge-$(date +'%Y-%m-%d_%H-%M-%S').png
+
+      - name: Upload screenshot as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: badge
-          path: badge.png
+          name: screenshots
+          path: screenshots/
