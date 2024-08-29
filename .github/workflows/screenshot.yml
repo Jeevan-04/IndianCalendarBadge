@@ -2,7 +2,7 @@ name: Capture Screenshot
 
 on:
   schedule:
-     - cron: "0 0 * * *"
+    - cron: "0 0 * * *"  # Run every day at midnight
   push:
     branches:
       - main  # Run on push to the main branch
@@ -14,36 +14,36 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated version
+        uses: actions/checkout@v4  # Checkout the code from the repository
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4  # Updated version
+        uses: actions/setup-node@v4  # Set up Node.js environment
         with:
-          node-version: '20'  # Use Node.js 20 as recommended
+          node-version: '20'  # Use Node.js version 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm install  # Install Node.js dependencies
 
       - name: Install Devanagari fonts
-        run: sudo apt-get install -y fonts-noto
+        run: sudo apt-get install -y fonts-noto  # Install required fonts
 
       - name: Run Puppeteer script
         run: |
           node screenshot.js
-          echo "Screenshot script completed."
+          echo "Screenshot script completed."  # Run Puppeteer script to take a screenshot
 
       - name: Create directory for screenshots
         run: |
           mkdir -p screenshots
-          echo "Directory created: $(ls -l)"
+          echo "Directory created: $(ls -l)"  # Create directory for screenshots if it doesn't exist
 
       - name: Move screenshot to directory
         run: |
           if [ -f badge.png ]; then
             mv badge.png screenshots/badge.png
-            echo "Screenshot moved to screenshots directory."
+            echo "Screenshot moved to screenshots directory."  # Move the screenshot to the screenshots directory
           else
-            echo "badge.png not found."
+            echo "badge.png not found."  # Log if the screenshot was not found
           fi
 
       - name: Commit screenshot to repository
@@ -51,11 +51,11 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add screenshots/badge.png
-          git commit -m "Add new screenshot"
-          git push origin main
+          git commit -m "Add new screenshot" || echo "No changes to commit"
+          git push origin main  # Commit and push the screenshot to the repository
 
       - name: Upload screenshot artifact
-        uses: actions/upload-artifact@v4  # Updated version
+        uses: actions/upload-artifact@v4  # Upload the screenshot as an artifact
         with:
           name: screenshots
           path: screenshots/badge.png
