@@ -9,11 +9,11 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    // Set viewport to a larger size and scale factor for higher resolution
+    console.log('Setting viewport...');
     await page.setViewport({
       width: 1200,
       height: 800,
-      deviceScaleFactor: 2 // Higher value for better resolution
+      deviceScaleFactor: 2
     });
 
     console.log('Navigating to the page...');
@@ -25,10 +25,10 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     console.log('Waiting for #badge element...');
     await page.waitForSelector('#badge', { timeout: 120000 });
 
-    console.log('Capturing screenshot of the badge element...');
+    console.log('Capturing screenshot...');
     const badgeElement = await page.$('#badge');
     if (badgeElement) {
-      await badgeElement.screenshot({ path: 'badge.png' }); // Capture the specific element
+      await badgeElement.screenshot({ path: 'badge.png' });
       console.log('Screenshot saved as badge.png');
     } else {
       console.error('Element with selector #badge not found');
