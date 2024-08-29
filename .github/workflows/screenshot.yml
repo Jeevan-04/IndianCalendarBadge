@@ -1,34 +1,32 @@
-name: Puppeteer Screenshot
+name: Capture Screenshot
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # Run on push to the main branch
+  workflow_dispatch:  # Allow manual triggering from the GitHub Actions UI
 
 jobs:
-  screenshot:
+  capture:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Specify your Node.js version
+          node-version: '18'  # Use the latest LTS version or specify your desired version
 
       - name: Install dependencies
-        run: |
-          npm install puppeteer
+        run: npm install
 
       - name: Run Puppeteer script
-        run: |
-          node capture.js
-        
-      - name: Upload Screenshot
+        run: node screenshot.js
+
+      - name: Upload screenshot
         uses: actions/upload-artifact@v3
         with:
-          name: badge-screenshot
+          name: badge
           path: badge.png
