@@ -40,8 +40,7 @@ jobs:
       - name: Move screenshot to directory
         run: |
           if [ -f badge.png ]; then
-            TIMESTAMP=$(date +'%Y-%m-%d_%H-%M-%S')
-            mv badge.png screenshots/badge-$TIMESTAMP.png
+            mv badge.png screenshots/badge.png
             echo "Screenshot moved to screenshots directory."
           else
             echo "badge.png not found."
@@ -51,12 +50,12 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add screenshots/
-          git commit -m "Add new screenshot: $(date +'%Y-%m-%d %H:%M:%S')"
+          git add screenshots/badge.png
+          git commit -m "Add new screenshot"
           git push origin main
 
       - name: Upload screenshot artifact
         uses: actions/upload-artifact@v4  # Updated version
         with:
           name: screenshots
-          path: screenshots/
+          path: screenshots/badge.png
