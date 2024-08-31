@@ -47,11 +47,25 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git fetch origin  # Fetch the latest changes from the remote
-          git rebase origin/main  # Rebase changes on top of the fetched changes
+          
+          # Stash any local changes
+          git stash
+          
+          # Fetch the latest changes from the remote
+          git fetch origin
+          
+          # Rebase changes on top of the fetched changes
+          git rebase origin/main
+          
+          # Apply stashed changes (if any)
+          git stash apply || echo "No stashed changes to apply"
+          
+          # Add and commit new screenshot
           git add screenshots/badge.png
           git commit -m "Update screenshot" || echo "No changes to commit"
-          git push origin main  # Commit and push the screenshot to the repository
+          
+          # Push changes to the repository
+          git push origin main
 
       - name: Upload screenshot artifact
         uses: actions/upload-artifact@v4  # Upload the screenshot as an artifact
