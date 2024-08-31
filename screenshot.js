@@ -20,7 +20,7 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
     console.log('Waiting for 1 second...');
-    await wait(1000); // Wait for 1 second
+    await wait(2000); // Wait for 1 second
 
     console.log('Waiting for #badge element...');
     await page.waitForSelector('#badge', { timeout: 120000 });
