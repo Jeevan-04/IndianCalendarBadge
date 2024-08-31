@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm install  # Install Node.js dependencies
 
-      - name: Install Devanagari fonts
-        run: sudo apt-get install -y fonts-noto  # Install required fonts
-
       - name: Run Puppeteer script
         run: |
           node screenshot.js
@@ -50,9 +47,10 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git pull origin main  # Pull the latest changes from the remote branch
+          git fetch origin  # Fetch the latest changes from the remote
+          git rebase origin/main  # Rebase changes on top of the fetched changes
           git add screenshots/badge.png
-          git commit -m "Add new screenshot" || echo "No changes to commit"
+          git commit -m "Update screenshot" || echo "No changes to commit"
           git push origin main  # Commit and push the screenshot to the repository
 
       - name: Upload screenshot artifact
