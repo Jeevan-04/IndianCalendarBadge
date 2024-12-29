@@ -15,7 +15,7 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       height: 800,
       deviceScaleFactor: 2
     });
-
+    
     console.log('Navigating to the page...');
     await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
