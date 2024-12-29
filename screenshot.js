@@ -9,6 +9,9 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
+    console.log('Disabling cache...');
+    await page.setCacheEnabled(false);
+
     console.log('Setting viewport...');
     await page.setViewport({
       width: 1200,
@@ -19,8 +22,8 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     console.log('Navigating to the page...');
     await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
-    console.log('Waiting for 1 second...');
-    await wait(2000); // Wait for 1 second
+    console.log('Waiting for 2 seconds...');
+    await wait(2000); // Wait for 2 seconds
 
     console.log('Waiting for #badge element...');
     await page.waitForSelector('#badge', { timeout: 120000 });
