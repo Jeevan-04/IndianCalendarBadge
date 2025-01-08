@@ -29,7 +29,7 @@ jobs:
           node screenshot.js
           echo "Screenshot script completed."  # Run Puppeteer script to take a screenshot
 
-      - name: Create directory for screenshots
+      - name: Ensure screenshots directory
         run: |
           mkdir -p screenshots
           echo "Directory created: $(ls -l)"  # Create directory for screenshots if it doesn't exist
@@ -43,31 +43,23 @@ jobs:
             echo "badge.png not found."  # Log if the screenshot was not found
           fi
 
-      - name: Commit screenshot to repository
+      - name: Commit and push screenshot
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # Create a new branch for the screenshot update
-          git checkout -b update-screenshot
+          # Ensure main branch is up-to-date
+          git checkout main
+          git pull origin main
 
           # Add and commit new screenshot
           git add screenshots/badge.png
           git commit -m "Update screenshot" || echo "No changes to commit"
 
-          # Push changes to the temporary branch
-          git push origin update-screenshot
-
-          # Merge the temporary branch into the main branch
-          git checkout main
-          git pull origin main
-          git merge update-screenshot
-
           # Push changes to the main branch
           git push origin main
-
-          # Clean up the temporary branch
-          git branch -d update-screenshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub Actions token for authentication
 
       - name: Upload screenshot artifact
         uses: actions/upload-artifact@v4  # Upload the screenshot as an artifact
