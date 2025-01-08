@@ -3,7 +3,6 @@ const puppeteer = require('puppeteer');
 // Function to introduce a delay
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Main function to capture a screenshot
 (async () => {
   try {
     console.log('Launching browser...');
@@ -19,39 +18,23 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       height: 800,
       deviceScaleFactor: 2
     });
-
+    
     console.log('Navigating to the page...');
-    await page.goto('https://vikramsamvat.onrender.com', {
-      waitUntil: 'networkidle2',
-      timeout: 120000
-    });
+    await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
-    console.log('Page URL:', page.url());
+    console.log('Waiting for 2 seconds...');
+    await wait(2000); // Wait for 2 seconds
 
-    // Capture full-page screenshot
-    const fullPagePath = 'fullpage.png';
-    console.log(`Capturing full-page screenshot and saving as ${fullPagePath}...`);
-    await page.screenshot({ path: fullPagePath, fullPage: true });
-    console.log(`Full-page screenshot saved as ${fullPagePath}`);
+    console.log('Waiting for #badge element...');
+    await page.waitForSelector('#badge', { timeout: 120000 });
 
-    // Delay to ensure elements load dynamically
-    console.log('Waiting for dynamic elements...');
-    await wait(2000);
-
-    // Check for #badge element
-    const badgeSelector = '#badge';
-    console.log(`Waiting for element ${badgeSelector}...`);
-    await page.waitForSelector(badgeSelector, { timeout: 120000 });
-
-    console.log('Capturing screenshot of #badge...');
-    const badgeElement = await page.$(badgeSelector);
-    const badgeScreenshotPath = 'badge.png';
-
+    console.log('Capturing screenshot...');
+    const badgeElement = await page.$('#badge');
     if (badgeElement) {
-      await badgeElement.screenshot({ path: badgeScreenshotPath });
-      console.log(`Screenshot of #badge saved as ${badgeScreenshotPath}`);
+      await badgeElement.screenshot({ path: 'badge.png' });
+      console.log('Screenshot saved as badge.png');
     } else {
-      console.error(`Element with selector ${badgeSelector} not found`);
+      console.error('Element with selector #badge not found');
     }
 
     console.log('Closing browser...');
