@@ -2,11 +2,8 @@ name: Capture Screenshot
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Run every day at midnight
-  push:
-    branches:
-      - main  # Run on push to the main branch
-  workflow_dispatch:  # Allow manual triggering from the GitHub Actions UI
+    - cron: "0 0 * * *" # Run daily at midnight
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   capture:
@@ -14,59 +11,47 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Checkout the code from the repository
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3  # Set up Node.js environment
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Use Node.js version 20
+          node-version: '20'
+
+      - name: Clean old artifacts
+        run: rm -rf screenshots badge.png
 
       - name: Install dependencies
-        run: npm install  # Install Node.js dependencies
+        run: npm install
 
       - name: Run Puppeteer script
-        run: node screenshot.js  # Run Puppeteer script to take a screenshot
+        run: node screenshot.js
 
       - name: Create directory for screenshots
-        run: mkdir -p screenshots  # Create directory for screenshots if it doesn't exist
+        run: mkdir -p screenshots
 
       - name: Move screenshot to directory
-        run: |
-          if [ -f badge.png ]; then
-            mv badge.png screenshots/badge.png
-            echo "Screenshot moved to screenshots directory."
-          else
-            echo "badge.png not found."
-          fi
+        run: mv badge.png screenshots/
 
       - name: Commit screenshot to repository
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
-          # Create a new branch for the screenshot update
-          git checkout -b update-screenshot
-
-          # Add and commit new screenshot
+          git checkout -b update-screenshot || git checkout update-screenshot
           git add screenshots/badge.png
           git commit -m "Update screenshot" || echo "No changes to commit"
+          git push origin update-screenshot --force
 
-          # Push changes to the temporary branch
-          git push origin update-screenshot
-
-          # Merge the temporary branch into the main branch
+      - name: Merge updates to main branch
+        run: |
           git checkout main
           git pull origin main
           git merge update-screenshot
-
-          # Push changes to the main branch
           git push origin main
-
-          # Clean up the temporary branch
           git branch -d update-screenshot
 
       - name: Upload screenshot artifact
-        uses: actions/upload-artifact@v3  # Upload the screenshot as an artifact
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/badge.png
