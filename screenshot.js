@@ -23,16 +23,14 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     });
 
     console.log('Navigating to the page...');
-    await page.goto('https://vikramsamvat.onrender.com', {
+    const timestamp = Date.now(); // Add timestamp to bypass cache
+    await page.goto(`https://vikramsamvat.onrender.com?cache_bust=${timestamp}`, {
       waitUntil: 'networkidle2',
       timeout: 120000,
     });
 
-    console.log('Waiting for dynamic content to load...');
-    await wait(5000); // Wait for 5 seconds to allow dynamic content to load
-
-    console.log('Waiting for #badge element...');
-    await page.waitForSelector('#badge', { timeout: 120000 });
+    console.log('Waiting for dynamic content...');
+    await page.waitForSelector('#badge', { timeout: 120000 }); // Ensure the badge element is loaded
 
     console.log('Capturing screenshot...');
     const badgeElement = await page.$('#badge');
