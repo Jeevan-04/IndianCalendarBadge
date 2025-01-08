@@ -6,7 +6,10 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 (async () => {
   try {
     console.log('Launching browser...');
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'] // Add no-sandbox flag
+    });
     const page = await browser.newPage();
 
     console.log('Setting user-agent...');
