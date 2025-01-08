@@ -18,12 +18,11 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       height: 800,
       deviceScaleFactor: 2
     });
-    
+
     console.log('Navigating to the page...');
     await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
-    console.log('Waiting for 2 seconds...');
-    await wait(2000); // Wait for 2 seconds
+    console.log('Page URL:', page.url());
 
     console.log('Waiting for #badge element...');
     await page.waitForSelector('#badge', { timeout: 120000 });
