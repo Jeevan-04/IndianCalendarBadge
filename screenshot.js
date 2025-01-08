@@ -39,11 +39,13 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
       console.log('Screenshot saved as badge.png');
     } else {
       console.error('Element with selector #badge not found');
+      throw new Error('Element #badge not found');
     }
 
     console.log('Closing browser...');
     await browser.close();
   } catch (error) {
     console.error('Error occurred:', error);
+    process.exit(1); // Exit with error code to ensure the workflow halts
   }
 })();
