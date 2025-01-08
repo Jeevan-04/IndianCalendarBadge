@@ -9,21 +9,26 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    console.log('Disabling cache...');
+    console.log('Clearing cache and cookies...');
+    await page.deleteCookie(...await page.cookies());
     await page.setCacheEnabled(false);
 
     console.log('Setting viewport...');
     await page.setViewport({
       width: 1200,
       height: 800,
-      deviceScaleFactor: 2
+      deviceScaleFactor: 2,
     });
-    
-    console.log('Navigating to the page...');
-    await page.goto('https://vikramsamvat.onrender.com', { waitUntil: 'networkidle2', timeout: 120000 });
 
-    console.log('Waiting for 2 seconds...');
-    await wait(2000); // Wait for 2 seconds
+    console.log('Navigating to the page...');
+    const currentTimestamp = new Date().getTime();
+    await page.goto(`https://vikramsamvat.onrender.com?cache_bust=${currentTimestamp}`, {
+      waitUntil: 'networkidle0',
+      timeout: 120000,
+    });
+
+    console.log('Waiting for content to update...');
+    await wait(5000); // Wait for 5 seconds to allow dynamic content to update
 
     console.log('Waiting for #badge element...');
     await page.waitForSelector('#badge', { timeout: 120000 });
