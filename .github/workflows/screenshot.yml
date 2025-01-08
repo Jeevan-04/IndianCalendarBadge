@@ -27,6 +27,15 @@ jobs:
       - name: Run Puppeteer script
         run: node screenshot.js
 
+      - name: Check if screenshot exists
+        run: |
+          if [ -f badge.png ]; then
+            echo "Screenshot exists!"
+          else
+            echo "No screenshot found!"
+            exit 1
+          fi
+
       - name: Create directory for screenshots
         run: mkdir -p screenshots
 
